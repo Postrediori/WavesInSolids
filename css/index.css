@@ -76,3 +76,33 @@ p.info-block > span {
 p.hidden-block {
     display: none;
 }
+
+/*
+ * HUD
+ */
+
+a.link {
+  color: #d00;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a.link:hover {
+  color: #f00;
+  text-decoration: none;
+}
+
+div#hud > div.hud-panel {
+    position: absolute;
+    padding: 5px;
+}
+
+div#hud > div.hud-panel.top-right {
+    top: 0px;
+    right: 0px;
+    text-align: right;
+}
+
+#hud {
+  display: flex;
+}
