@@ -47,9 +47,48 @@ Model = function(params, dimensions) {
         }
     }
 
-    this.updateHorizontal = function(time) { }
+    this.movePoint = function(pointCoord, time) {
+        return {
+            x: pointCoord.x0,
+            y: pointCoord.y0,
+        };
+    }
+    
+    this.updateHorizontal = function(time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
 
-    this.updateVertical = function(time) { }
+        for (var j = 0; j < this.horizontalLines; j++) {
+            for (var i = 0; i < this.pointsCount; i++) {
+                var point = this.horizontalCoords[j][i];
+                
+                var newCoord = this.movePoint({x:point.x0, y:point.y0}, time);
+                
+                point.x = newCoord.x;
+                point.y = newCoord.y;
+                this.horizontalCoords[j][i] = point;
+            }
+        }
+    }
+
+    this.updateVertical = function(time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+
+        for (var j = 0; j < this.verticalLines; j++) {
+            for (var i = 0; i < this.pointsCount; i++) {
+                var point = this.verticalCoords[j][i];
+                
+                var newCoord = this.movePoint({x:point.x0, y:point.y0}, time);
+                
+                point.x = newCoord.x;
+                point.y = newCoord.y;
+                this.verticalCoords[j][i] = point;
+            }
+        }
+    }
     
     this.update = function(time) {
         this.updateHorizontal(time);
@@ -62,83 +101,30 @@ Model = function(params, dimensions) {
 SWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.updateHorizontal = function(time) {
+    this.movePoint = function(pointCoord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
-
-        for (var j = 0; j < this.horizontalLines; j++) {
-            for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.horizontalCoords[j][i];
-                var pointX = point.x0;
-                var pointY = point.y0
-                    + amplitude * Math.sin(point.x0 * scale - time * timeScale);
-                point.x = pointX;
-                point.y = pointY;
-                this.horizontalCoords[j][i] = point;
-            }
-        }
-    }
-
-    this.updateVertical = function(time) {
-        var amplitude = params.amplitude;
-        var scale = params.scale;
-        var timeScale = params.timeScale;
-
-        for (var j = 0; j < this.verticalLines; j++) {
-            for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.verticalCoords[j][i];
-                
-                var pointX = point.x0;
-                var pointY = point.y0
-                    + amplitude * Math.sin(point.x0 * scale - time * timeScale);
-                point.x = pointX;
-                point.y = pointY;
-                this.verticalCoords[j][i] = point;
-            }
-        }
+        
+        return {
+            x: pointCoord.x,
+            y: pointCoord.y + amplitude * Math.sin(pointCoord.x * scale - time * timeScale),
+        };
     }
 }
 
 PWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.updateHorizontal = function(time) {
+    this.movePoint = function(pointCoord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
-
-        for (var j = 0; j < this.horizontalLines; j++) {
-            for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.horizontalCoords[j][i];
-                
-                var pointX = point.x0
-                    + amplitude * Math.cos(point.x0 * scale - time * timeScale);
-                var pointY = point.y0;
-                point.x = pointX;
-                point.y = pointY;
-                this.horizontalCoords[j][i] = point;
-            }
-        }
-    }
-
-    this.updateVertical = function(time) {
-        var amplitude = params.amplitude;
-        var scale = params.scale;
-        var timeScale = params.timeScale;
-
-        for (var j = 0; j < this.verticalLines; j++) {
-            for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.verticalCoords[j][i];
-                
-                var pointX = point.x0
-                    + amplitude * Math.cos(point.x0 * scale - time * timeScale);
-                var pointY = point.y0;
-                point.x = pointX;
-                point.y = pointY;
-                this.verticalCoords[j][i] = point;
-            }
-        }
+        
+        return {
+            x: pointCoord.x + amplitude * Math.cos(pointCoord.x * scale - time * timeScale),
+            y: pointCoord.y,
+        };
     }
 }
 
@@ -149,55 +135,22 @@ RadialPWaveModel = function(params, dimensions) {
         {x: this.dimensions.width / 2.0,
          y: this.dimensions.height / 2.0};
      
-    this.updateHorizontal = function(time) {
+    this.movePoint = function(pointCoord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
-
-        for (var j = 0; j < this.horizontalLines; j++) {
-            for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.horizontalCoords[j][i];
-                
-                var dX = point.x0 - this.waveCenter.x;
-                var dY = point.y0 - this.waveCenter.y;
-                
-                var angle = Math.atan2(dY, dX);
-                var distance = Math.sqrt(dX * dX + dY * dY);
-                
-                var q = distance * scale - time * timeScale;
-                
-                var pointX = point.x0 + amplitude * Math.cos(angle) * Math.cos(q);
-                var pointY = point.y0 + amplitude * Math.sin(angle) * Math.cos(q);
-                point.x = pointX;
-                point.y = pointY;
-                this.horizontalCoords[j][i] = point;
-            }
-        }
-    }
-
-    this.updateVertical = function(time) {
-        var amplitude = params.amplitude;
-        var scale = params.scale;
-        var timeScale = params.timeScale;
-
-        for (var j = 0; j < this.verticalLines; j++) {
-            for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.verticalCoords[j][i];
-                
-                var dX = point.x0 - this.waveCenter.x;
-                var dY = point.y0 - this.waveCenter.y;
-                
-                var angle = Math.atan2(dY, dX);
-                var distance = Math.sqrt(dX * dX + dY * dY);
-                
-                var q = distance * scale - time * timeScale;
-                
-                var pointX = point.x0 + amplitude * Math.cos(angle) * Math.cos(q);
-                var pointY = point.y0 + amplitude * Math.sin(angle) * Math.cos(q);
-                point.x = pointX;
-                point.y = pointY;
-                this.verticalCoords[j][i] = point;
-            }
-        }
+        
+        var dX = pointCoord.x - this.waveCenter.x;
+        var dY = pointCoord.y - this.waveCenter.y;
+        
+        var angle = Math.atan2(dY, dX);
+        var distance = Math.sqrt(dX * dX + dY * dY);
+        
+        var q = distance * scale - time * timeScale;
+        
+        return {
+            x: pointCoord.x + amplitude * Math.cos(angle) * Math.cos(q),
+            y: pointCoord.y + amplitude * Math.sin(angle) * Math.cos(q),
+        };
     }
 }
