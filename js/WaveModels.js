@@ -50,7 +50,7 @@ Model = function(params, dimensions) {
     this.init();
 }
 
-PWaveModel = function(params, dimensions) {
+SWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.updateHorizontal = function(time) {
@@ -96,7 +96,7 @@ PWaveModel = function(params, dimensions) {
     }
 }
 
-SWaveModel = function(params, dimensions) {
+PWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.updateHorizontal = function(time) {
