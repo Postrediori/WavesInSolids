@@ -19,3 +19,19 @@ The S-wave is a transverse wave, meaning that, in the simplest situation, the os
 The equation of simple S-wave is given by:
 
 ![S-wave equation](images/swave.png)
+
+### Radial P-wave
+
+The equation of a radial P-wave is given by:
+
+![Radial P-wave equation](images/radialpwave.png)
+
+where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to the wave origin point *C(x<sub>c</sub>, y<sub>c</sub>)*.
+
+### Radial S-wave
+
+The equation of a radial S-wave is given by:
+
+![Radial S-wave equation](images/radialswave.png)
+
+where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to the wave origin point *C(x<sub>c</sub>, y<sub>c</sub>)*.
