@@ -217,7 +217,7 @@ RayleighWaveModel = function(params, dimensions) {
         // Horizontal amplitude is a cosine function.
         // X Amplitude = max at the top and 0 at the bottom
         var currentXAmplitude = xAmplitude
-            * Math.cos(Math.PI / 2.0 * (currentDepth / this.modelDepth));
+            * Math.exp(-currentDepth / this.modelDepth);
             
         // Vertical amplitude is a linear function.
         var currentYAmplitude = yAmplitude
