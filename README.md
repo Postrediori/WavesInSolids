@@ -43,3 +43,22 @@ The equation of a radial S-wave is given by:
 ![Radial S-wave equation](images/radialswave.png)
 
 where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to the wave origin point *C(x<sub>c</sub>, y<sub>c</sub>)*.
+
+### Rayleigh wave
+
+![Rayleigh Wave Screenshot](images/RayleighWaveScreenshot.png)
+
+[Rayleigh waves](https://en.wikipedia.org/wiki/Rayleigh_wave) are a type of surface
+acoustic wave that travel along the surface of solids.
+
+The equation of a Rayleigh wave is given by:
+
+![Rayleigh Wave equation](images/RayleighWaveEq1.png)
+![Rayleigh Wave equation](images/RayleighWaveEq2.png)
+![Rayleigh Wave equation](images/RayleighWaveEq3.png)
+
+where *&phi;* is wave phase in a point,
+*d* is depth of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to medium top level *Y*,
+*h* is total medium depth,
+*A<sub>x</sub>* and *A<sub>y</sub>* are horizontal and vertical
+amplitudes of the Rayleigh wave respectively.
