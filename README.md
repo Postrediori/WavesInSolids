@@ -54,7 +54,9 @@ acoustic wave that travel along the surface of solids.
 The equation of a Rayleigh wave is given by:
 
 ![Rayleigh Wave equation](images/RayleighWaveEq1.png)
+
 ![Rayleigh Wave equation](images/RayleighWaveEq2.png)
+
 ![Rayleigh Wave equation](images/RayleighWaveEq3.png)
 
 where *&phi;* is wave phase in a point,
