@@ -9,6 +9,7 @@ window.onload = function() {
     var pWaveModel = new PWaveModel(modelParams, canvasSize);
     var sWaveModel = new SWaveModel(modelParams, canvasSize);
     var radialPWaveModel = new RadialPWaveModel(modelParams, canvasSize);
+    var radialSWaveModel = new RadialSWaveModel(modelParams, canvasSize);
     var model = pWaveModel;
     
     function initSvgPoints(params) {
@@ -125,6 +126,9 @@ window.onload = function() {
             
         } else if (modelId === "radialpwave") {
             model = radialPWaveModel;
+            
+        } else if (modelId === "radialswave") {
+            model = radialSWaveModel;
             
         }
     }

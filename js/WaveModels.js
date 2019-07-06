@@ -4,9 +4,9 @@ function CartesianToRadial(coord, origin) {
     var dY = coord.y - origin.y;
     
     var theta = Math.atan2(dY, dX);
-    var rad = Math.sqrt(dX * dX + dY * dY);
+    var r = Math.sqrt(dX * dX + dY * dY);
     
-    return {theta: theta, rad: rad};
+    return {theta: theta, r: r};
 }
 
 ModelParameters = function(data) {
@@ -152,11 +152,35 @@ RadialPWaveModel = function(params, dimensions) {
         
         var radialCoords = CartesianToRadial(pointCoord, this.waveCenter);
         
-        var q = radialCoords.rad * scale - time * timeScale;
+        var q = radialCoords.r * scale - time * timeScale;
         
         return {
             x: pointCoord.x + amplitude * Math.cos(radialCoords.theta) * Math.cos(q),
             y: pointCoord.y + amplitude * Math.sin(radialCoords.theta) * Math.cos(q),
+        };
+    }
+}
+
+RadialSWaveModel = function(params, dimensions) {
+    Model.call(this, params, dimensions);
+    
+    this.waveCenter =
+        {x: this.dimensions.width / 2.0,
+         y: this.dimensions.height / 2.0};
+     
+    this.movePoint = function(pointCoord, time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+        
+        var radialCoords = CartesianToRadial(pointCoord, this.waveCenter);
+        
+        var q = scale * radialCoords.r - time * timeScale;
+        var theta = radialCoords.theta + amplitude / 180. * Math.cos(q);
+        
+        return {
+            x: this.waveCenter.x + radialCoords.r * Math.cos(theta),
+            y: this.waveCenter.y + radialCoords.r * Math.sin(theta),
         };
     }
 }
