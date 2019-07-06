@@ -12,6 +12,11 @@ ModelParameters = function(data) {
 Model = function(params, dimensions) {
     this.params = params;
     this.dimensions = dimensions;
+    this.modelDimensions =
+        {width: this.dimensions.width * 0.85, height: this.dimensions.height * 0.85};
+    this.modelOrigin =
+        {x: (this.dimensions.width - this.modelDimensions.width) / 2.0,
+         y: (this.dimensions.height - this.modelDimensions.height) / 2.0};
     this.horizontalLines = this.params.horizontalLines;
     this.verticalLines = this.params.verticalLines;
     this.pointsCount = this.params.pointsCount;
@@ -53,13 +58,13 @@ PWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
 
-        var dX = this.dimensions.width / (this.pointsCount + 1);
-        var dY = this.dimensions.height / (this.horizontalLines + 1);
+        var dX = this.modelDimensions.width / (this.pointsCount - 1);
+        var dY = this.modelDimensions.height / (this.horizontalLines - 1);
 
         for (var j = 0; j < this.horizontalLines; j++) {
-            var pointY0 = (j + 1)  * dY;
+            var pointY0 = j * dY + this.modelOrigin.y;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointX = i * dX;
+                var pointX = i * dX + this.modelOrigin.x;
                 var pointY = pointY0 + amplitude
                     * Math.sin(pointX * scale - time * timeScale);
                 this.horizontalCoords[j][i] = {x:pointX, y:pointY};
@@ -72,14 +77,16 @@ PWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
 
-        var dX = this.dimensions.width / (this.verticalLines + 1);
-        var dY = this.dimensions.height / (this.pointsCount + 1);
+        var dX = this.modelDimensions.width / (this.verticalLines - 1);
+        var dY = this.modelDimensions.height / (this.pointsCount - 1);
 
-        for (var j = 1; j < this.verticalLines; j++) {
-            var pointX0 = j * dX;
+        for (var j = 0; j < this.verticalLines; j++) {
+            var pointX0 = j * dX + this.modelOrigin.x;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointY = i * dY;
                 var pointX = pointX0;
+                var pointY = i * dY + this.modelOrigin.y;
+                pointY += amplitude
+                    * Math.sin(pointX * scale - time * timeScale);
                 this.verticalCoords[j][i] = {x:pointX, y:pointY};
             }
         }
@@ -94,13 +101,14 @@ SWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
 
-        var dX = this.dimensions.width / (this.pointsCount + 1);
-        var dY = this.dimensions.height / (this.horizontalLines + 1);
+        var dX = this.modelDimensions.width / (this.pointsCount - 1);
+        var dY = this.modelDimensions.height / (this.horizontalLines - 1);
 
         for (var j = 0; j < this.horizontalLines; j++) {
-            var pointY0 = (j + 1)  * dY;
+            var pointY0 = j * dY + this.modelOrigin.y;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointX = i * dX;
+                var pointX = i * dX + this.modelOrigin.x;
+                pointX += amplitude * Math.sin(pointX * scale - time * timeScale);
                 var pointY = pointY0;
                 this.horizontalCoords[j][i] = {x:pointX, y:pointY};
             }
@@ -112,15 +120,15 @@ SWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
 
-        var dX = this.dimensions.width / (this.verticalLines + 1);
-        var dY = this.dimensions.height / (this.pointsCount + 1);
+        var dX = this.modelDimensions.width / (this.verticalLines - 1);
+        var dY = this.modelDimensions.height / (this.pointsCount - 1);
 
-        for (var j = 1; j < this.verticalLines; j++) {
-            var pointX0 = j * dX;
+        for (var j = 0; j < this.verticalLines; j++) {
+            var pointX0 = j * dX + this.modelOrigin.x;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointY = i * dY;
                 var pointX = pointX0 + amplitude
                     * Math.sin(pointX0 * scale - time * timeScale);
+                var pointY = i * dY + this.modelOrigin.y;
                 this.verticalCoords[j][i] = {x:pointX, y:pointY};
             }
         }
