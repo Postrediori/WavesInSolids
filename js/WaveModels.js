@@ -184,3 +184,43 @@ RadialSWaveModel = function(params, dimensions) {
         };
     }
 }
+
+RayleighWaveModel = function(params, dimensions) {
+    Model.call(this, params, dimensions);
+    
+    this.modelDepth = this.modelDimensions.height;
+    this.modelTop = this.modelOrigin.y;
+    this.modelBottom = this.modelOrigin.y + this.depth / 2.0;
+     
+    this.movePoint = function(pointCoord, time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+        
+        // Horizontal and vertical amplitudes
+        // are calculated as catheti of a right triangle
+        // with amplitude as a hypothenuse.
+        // TODO: Adjust two amplitudes independently.
+        var xAmplitude = amplitude / Math.sqrt(2.0);
+        var yAmplitude = amplitude / Math.sqrt(2.0);
+        
+        // Depth of a point
+        var currentDepth = pointCoord.y - this.modelTop;
+        
+        // Horizontal amplitude is a cosine function.
+        // X Amplitude = max at the top and 0 at the bottom
+        var currentXAmplitude = xAmplitude
+            * Math.cos(Math.PI / 2.0 * (currentDepth / this.modelDepth));
+            
+        // Vertical amplitude is a linear function.
+        var currentYAmplitude = yAmplitude
+            * (1.0 - currentDepth / this.modelDepth);
+        
+        return {
+            x: pointCoord.x
+                + currentXAmplitude * Math.cos(pointCoord.x * scale - time * timeScale),
+            y: pointCoord.y
+                + currentYAmplitude * Math.sin(pointCoord.x * scale - time * timeScale),
+        };
+    }
+}
