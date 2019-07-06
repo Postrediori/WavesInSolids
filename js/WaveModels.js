@@ -9,6 +9,12 @@ function CartesianToRadial(coord, origin) {
     return {theta: theta, r: r};
 }
 
+function DistanceBetweenPoints(p1, p2) {
+    var dX = p1.x - p2.x;
+    var dY = p1.y - p2.y;
+    return Math.sqrt(dX * dX + dY * dY);
+}
+
 ModelParameters = function(data) {
     this.fps = parseInt(data["fps"].value);
     this.pointsCount = parseInt(data["points-count"].value);
@@ -17,6 +23,7 @@ ModelParameters = function(data) {
     this.amplitude = parseFloat(data["amplitude"].value);
     this.scale = parseFloat(data["scale"].value);
     this.timeScale = parseFloat(data["time-scale"].value);
+    this.markerHistoryLen = parseInt(data["marker-history-len"].value);
 }
 
 Model = function(params, dimensions) {

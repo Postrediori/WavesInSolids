@@ -29,6 +29,20 @@ svg > g > line.horizontal-line {
     stroke-width: 2;
 }
 
+svg > g > circle.marker {
+    fill: maroon;
+    stroke-width: 0;
+}
+
+svg > g > line.marker-history-line {
+    stroke: red;
+    stroke-width: 2;
+}
+
+/*
+ * Model controls
+ */
+
 div#models-list {  
     display: flex;
     justify-content: center;
