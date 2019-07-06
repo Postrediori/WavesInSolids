@@ -176,7 +176,7 @@ RadialSWaveModel = function(params, dimensions) {
         var radialCoords = CartesianToRadial(pointCoord, this.waveCenter);
         
         var q = scale * radialCoords.r - time * timeScale;
-        var theta = radialCoords.theta + amplitude / 180. * Math.cos(q);
+        var theta = radialCoords.theta + amplitude / radialCoords.r * Math.cos(q);
         
         return {
             x: this.waveCenter.x + radialCoords.r * Math.cos(theta),
