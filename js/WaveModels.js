@@ -141,3 +141,63 @@ PWaveModel = function(params, dimensions) {
         }
     }
 }
+
+RadialPWaveModel = function(params, dimensions) {
+    Model.call(this, params, dimensions);
+    
+    this.waveCenter =
+        {x: this.dimensions.width / 2.0,
+         y: this.dimensions.height / 2.0};
+     
+    this.updateHorizontal = function(time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+
+        for (var j = 0; j < this.horizontalLines; j++) {
+            for (var i = 0; i < this.pointsCount; i++) {
+                var point = this.horizontalCoords[j][i];
+                
+                var dX = point.x0 - this.waveCenter.x;
+                var dY = point.y0 - this.waveCenter.y;
+                
+                var angle = Math.atan2(dY, dX);
+                var distance = Math.sqrt(dX * dX + dY * dY);
+                
+                var q = distance * scale - time * timeScale;
+                
+                var pointX = point.x0 + amplitude * Math.cos(angle) * Math.cos(q);
+                var pointY = point.y0 + amplitude * Math.sin(angle) * Math.cos(q);
+                point.x = pointX;
+                point.y = pointY;
+                this.horizontalCoords[j][i] = point;
+            }
+        }
+    }
+
+    this.updateVertical = function(time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+
+        for (var j = 0; j < this.verticalLines; j++) {
+            for (var i = 0; i < this.pointsCount; i++) {
+                var point = this.verticalCoords[j][i];
+                
+                var dX = point.x0 - this.waveCenter.x;
+                var dY = point.y0 - this.waveCenter.y;
+                
+                var angle = Math.atan2(dY, dX);
+                var distance = Math.sqrt(dX * dX + dY * dY);
+                
+                var q = distance * scale - time * timeScale;
+                
+                var pointX = point.x0 + amplitude * Math.cos(angle) * Math.cos(q);
+                var pointY = point.y0 + amplitude * Math.sin(angle) * Math.cos(q);
+                point.x = pointX;
+                point.y = pointY;
+                this.verticalCoords[j][i] = point;
+            }
+        }
+    }
+}
