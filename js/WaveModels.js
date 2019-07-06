@@ -64,9 +64,11 @@ PWaveModel = function(params, dimensions) {
         for (var j = 0; j < this.horizontalLines; j++) {
             var pointY0 = j * dY + this.modelOrigin.y;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointX = i * dX + this.modelOrigin.x;
-                var pointY = pointY0 + amplitude
-                    * Math.sin(pointX * scale - time * timeScale);
+                var pointX0 = i * dX + this.modelOrigin.x;
+                
+                var pointX = pointX0;
+                var pointY = pointY0
+                    + amplitude * Math.sin(pointX * scale - time * timeScale);
                 this.horizontalCoords[j][i] = {x:pointX, y:pointY};
             }
         }
@@ -83,10 +85,11 @@ PWaveModel = function(params, dimensions) {
         for (var j = 0; j < this.verticalLines; j++) {
             var pointX0 = j * dX + this.modelOrigin.x;
             for (var i = 0; i < this.pointsCount; i++) {
+                var pointY0 = i * dY + this.modelOrigin.y;
+                
                 var pointX = pointX0;
-                var pointY = i * dY + this.modelOrigin.y;
-                pointY += amplitude
-                    * Math.sin(pointX * scale - time * timeScale);
+                var pointY = pointY0
+                    + amplitude * Math.sin(pointX * scale - time * timeScale);
                 this.verticalCoords[j][i] = {x:pointX, y:pointY};
             }
         }
@@ -107,8 +110,10 @@ SWaveModel = function(params, dimensions) {
         for (var j = 0; j < this.horizontalLines; j++) {
             var pointY0 = j * dY + this.modelOrigin.y;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointX = i * dX + this.modelOrigin.x;
-                pointX += amplitude * Math.sin(pointX * scale - time * timeScale);
+                var pointX0 = i * dX + this.modelOrigin.x;
+                
+                var pointX = pointX0
+                    + amplitude * Math.cos(pointX0 * scale - time * timeScale);
                 var pointY = pointY0;
                 this.horizontalCoords[j][i] = {x:pointX, y:pointY};
             }
@@ -126,9 +131,11 @@ SWaveModel = function(params, dimensions) {
         for (var j = 0; j < this.verticalLines; j++) {
             var pointX0 = j * dX + this.modelOrigin.x;
             for (var i = 0; i < this.pointsCount; i++) {
-                var pointX = pointX0 + amplitude
-                    * Math.sin(pointX0 * scale - time * timeScale);
-                var pointY = i * dY + this.modelOrigin.y;
+                var pointY0 = i * dY + this.modelOrigin.y;
+                
+                var pointX = pointX0
+                    + amplitude * Math.cos(pointX0 * scale - time * timeScale);
+                var pointY = pointY0;
                 this.verticalCoords[j][i] = {x:pointX, y:pointY};
             }
         }
