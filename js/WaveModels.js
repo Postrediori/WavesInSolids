@@ -1,4 +1,14 @@
 
+function CartesianToRadial(coord, origin) {
+    var dX = coord.x - origin.x;
+    var dY = coord.y - origin.y;
+    
+    var theta = Math.atan2(dY, dX);
+    var rad = Math.sqrt(dX * dX + dY * dY);
+    
+    return {theta: theta, rad: rad};
+}
+
 ModelParameters = function(data) {
     this.fps = parseInt(data["fps"].value);
     this.pointsCount = parseInt(data["points-count"].value);
@@ -140,17 +150,13 @@ RadialPWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var dX = pointCoord.x - this.waveCenter.x;
-        var dY = pointCoord.y - this.waveCenter.y;
+        var radialCoords = CartesianToRadial(pointCoord, this.waveCenter);
         
-        var angle = Math.atan2(dY, dX);
-        var distance = Math.sqrt(dX * dX + dY * dY);
-        
-        var q = distance * scale - time * timeScale;
+        var q = radialCoords.rad * scale - time * timeScale;
         
         return {
-            x: pointCoord.x + amplitude * Math.cos(angle) * Math.cos(q),
-            y: pointCoord.y + amplitude * Math.sin(angle) * Math.cos(q),
+            x: pointCoord.x + amplitude * Math.cos(radialCoords.theta) * Math.cos(q),
+            y: pointCoord.y + amplitude * Math.sin(radialCoords.theta) * Math.cos(q),
         };
     }
 }
