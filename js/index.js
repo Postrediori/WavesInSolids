@@ -14,6 +14,9 @@ window.onload = function() {
     var model = pWaveModel;
     
     function initSvgPoints(params) {
+        var svgVerticalLines = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        svgVerticalLines.setAttribute('id', 'vertical-lines');
+
         for (var j = 0; j < params.verticalLines; j++) {
             for (var i = 0; i < params.pointsCount - 1; i++) {
                 var el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -23,10 +26,14 @@ window.onload = function() {
                 el.setAttribute('y2', '0');
                 el.setAttribute('class', 'vertical-line');
                 el.setAttribute('id', 'vertical-line-' + j.toString() + '-' + i.toString());
-                canvas.appendChild(el);
+                svgVerticalLines.appendChild(el);
             }
         }
-        
+        canvas.appendChild(svgVerticalLines);
+
+        var svgHorizontalLines = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        svgHorizontalLines.setAttribute('id', 'vertical-lines');
+
         for (var j = 0; j < params.horizontalLines; j++) {
             for (var i = 0; i < params.pointsCount - 1; i++) {
                 var el = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -36,9 +43,12 @@ window.onload = function() {
                 el.setAttribute('y2', '0');
                 el.setAttribute('class', 'horizontal-line');
                 el.setAttribute('id', 'horizontal-line-' + j.toString() + '-' + i.toString());
-                canvas.appendChild(el);
+                svgHorizontalLines.appendChild(el);
             }
         }
+
+        canvas.appendChild(svgHorizontalLines);
+
     }
 
     function updateSvgPoints(params, model) {

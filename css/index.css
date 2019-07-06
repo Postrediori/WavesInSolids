@@ -16,12 +16,15 @@ svg {
     transform: translate(-50%, 0/*-50%*/);
 }
 
-svg > line.vertical-line {
+/*
+ * SVG display styles
+ */
+svg > g >line.vertical-line {
     stroke: orange;
     stroke-width: 2;
 }
 
-svg > line.horizontal-line {
+svg > g > line.horizontal-line {
     stroke: blue;
     stroke-width: 2;
 }
