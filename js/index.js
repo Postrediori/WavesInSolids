@@ -264,28 +264,19 @@ window.onload = function() {
     var modelSwitchers = document.getElementsByClassName("model-switch");
     var modelInfoBlocks = document.getElementsByClassName("info-block");
     
-    Array.from(modelSwitchers).forEach(function(element) {
-        element.addEventListener('click', modelSwitchListener);
-    });
-    
-    function modelSwitchListener(e) {
-        Array.from(modelSwitchers).forEach(function(element) {
-            element.classList.remove('selected-button');
-        });
-        e.target.classList.add('selected-button');
-        
-        Array.from(modelInfoBlocks).forEach(function(element) {
-            element.classList.add('hidden-block');
-        });
-        
-        var modelId = e.target.getAttribute('href').substring(1);
-        setModel(modelId);
-        
-        var infoBlock = document.getElementById(modelId + '-info');
-        infoBlock.classList.remove('hidden-block');
+    function applyHashChange(){
+        var modelId = window.location.hash.substr(1)
+        setModel(modelId)
     }
-    
+
+    if(window.location.hash.length > 0){
+        applyHashChange()
+    }
+
+    window.addEventListener("hashchange", applyHashChange,false);
+
     function setModel(modelId) {
+
         if (modelId === "pwave") {
             model = pWaveModel;
         }
@@ -307,8 +298,33 @@ window.onload = function() {
         else if (modelId === "symlambwave") {
             model = symLambWaveModel;
         }
+        else {
+            // Default model for unknown links
+            model = pWaveModel;
+            modelId = "pwave";
+        }
+
+        uiModelSwitch(modelId);
 
         markerHistory.clear();
+    }
+    
+    function uiModelSwitch(modelId) {
+        Array.from(modelSwitchers).forEach(function(element) {
+            if (element.getAttribute('href') === '#'+modelId) {
+                element.classList.add('selected-button');
+            }
+            else {
+                element.classList.remove('selected-button');
+            }
+        });
+        
+        Array.from(modelInfoBlocks).forEach(function(element) {
+            element.classList.add('hidden-block');
+        });
+        
+        var infoBlock = document.getElementById(modelId + '-info');
+        infoBlock.classList.remove('hidden-block');
     }
     
     function onCanvasMouseDown(evt) {
