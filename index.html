@@ -25,6 +25,7 @@
             <input type="hidden" name="horizontal-lines" value="10" />
             <input type="hidden" name="vertical-lines" value="16" />
             <input type="hidden" name="amplitude" value="20.0" />
+            <input type="hidden" name="lamb-amplitude" value="0.1" />
             <input type="hidden" name="scale" value="0.025" />
             <input type="hidden" name="time-scale" value="0.0025" />
             <input type="hidden" name="marker-history-len" value="75" />
@@ -37,6 +38,8 @@
                 <a class="button model-switch" href="#radialpwave">Radial P-wave</a>
                 <a class="button model-switch" href="#radialswave">Radial S-wave</a>
                 <a class="button model-switch" href="#rayleighwave">Rayleigh wave</a>
+                <a class="button model-switch" href="#asymlambwave">Antisymmetric Lamb wave</a>
+                <a class="button model-switch" href="#symlambwave">Symetrical Lamb wave</a>
             </div>
             
             <div id="info-blocks">
@@ -103,6 +106,30 @@
                     <em>h</em> is total medium depth,
                     <em>A<sub>x</sub></em> and <em>A<sub>y</sub></em> are horizontal and vertical
                     amplitudes of the Rayleigh wave respectively.</p>
+                </div>
+
+                <div class="info-block hidden-block" id="asymlambwave-info">
+                    <p><a href="https://en.wikipedia.org/wiki/Lamb_waves">Lamb waves</a>
+                    propagate in solid plates. They are a combination of standing waves and
+                    elastic propagational waves that, like Rayleigh waves, are constrained by
+                    the elastic properties of the surface(s) that guide them.</p>
+                    <p>Their properties turned out to be quite complex. Since the 1990s,
+                    the understanding and utilization of Lamb waves has advanced greatly, thanks
+                    to the rapid increase in the availability of computing power. Lamb's theoretical
+                    formulations have found substantial practical application, especially in the field
+                    of nondestructive testing.</p>
+                </div>
+
+                <div class="info-block hidden-block" id="symlambwave-info">
+                    <p><a href="https://en.wikipedia.org/wiki/Lamb_waves">Lamb waves</a>
+                    propagate in solid plates. They are a combination of standing waves and
+                    elastic propagational waves that, like Rayleigh waves, are constrained by
+                    the elastic properties of the surface(s) that guide them.</p>
+                    <p>Their properties turned out to be quite complex. Since the 1990s,
+                    the understanding and utilization of Lamb waves has advanced greatly, thanks
+                    to the rapid increase in the availability of computing power. Lamb's theoretical
+                    formulations have found substantial practical application, especially in the field
+                    of nondestructive testing.</p>
                 </div>
             </div>
         </div>

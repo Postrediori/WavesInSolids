@@ -49,6 +49,9 @@ window.onload = function() {
     var radialPWaveModel = new RadialPWaveModel(modelParams, canvasSize);
     var radialSWaveModel = new RadialSWaveModel(modelParams, canvasSize);
     var rayleighWaveModel = new RayleighWaveModel(modelParams, canvasSize);
+    var asymLambWaveModel = new AsymLambWaveModel(modelParams, canvasSize);
+    var symLambWaveModel = new SymLambWaveModel(modelParams, canvasSize);
+
     var model = pWaveModel;
     
     var markerPos = {dataSet: 'horizontal', i: Math.floor(model.pointsCount / 2), j:0};
@@ -285,19 +288,24 @@ window.onload = function() {
     function setModel(modelId) {
         if (modelId === "pwave") {
             model = pWaveModel;
-            
-        } else if (modelId === "swave") {
+        }
+        else if (modelId === "swave") {
             model = sWaveModel;
-            
-        } else if (modelId === "radialpwave") {
+        }
+        else if (modelId === "radialpwave") {
             model = radialPWaveModel;
-            
-        } else if (modelId === "radialswave") {
+        }
+        else if (modelId === "radialswave") {
             model = radialSWaveModel;
-            
-        } else if (modelId === "rayleighwave") {
+        }
+        else if (modelId === "rayleighwave") {
             model = rayleighWaveModel;
-            
+        }
+        else if (modelId === "asymlambwave") {
+            model = asymLambWaveModel;
+        }
+        else if (modelId === "symlambwave") {
+            model = symLambWaveModel;
         }
 
         markerHistory.clear();

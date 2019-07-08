@@ -5,6 +5,7 @@ ModelParameters = function(data) {
     this.horizontalLines = parseInt(data["horizontal-lines"].value);
     this.verticalLines = parseInt(data["vertical-lines"].value);
     this.amplitude = parseFloat(data["amplitude"].value);
+    this.lambAmplitude = parseFloat(data["lamb-amplitude"].value);
     this.scale = parseFloat(data["scale"].value);
     this.timeScale = parseFloat(data["time-scale"].value);
     this.markerHistoryLen = parseInt(data["marker-history-len"].value);
@@ -206,4 +207,69 @@ RayleighWaveModel = function(params, dimensions) {
                 + currentYAmplitude * Math.sin(pointCoord.x * scale - time * timeScale),
         };
     }
+}
+
+AsymLambWaveModel = function(params, dimensions) {
+    Model.call(this, params, dimensions);
+
+    this.waveOrigin = this.dimensions.height / 2.0;
+    this.modelDimensions =
+        {width: this.modelDimensions.width, height: this.modelDimensions.height / 2.0};
+    this.modelOrigin =
+        {x: this.modelOrigin.x,
+         y: this.waveOrigin - this.modelDimensions.height / 2.0};
+
+    this.movePoint = function(pointCoord, time) {
+        var amplitude = params.amplitude;
+        var lambAmplitude = params.lambAmplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+        
+        var phi = pointCoord.x * scale - time * timeScale;
+
+        var distance = lambAmplitude * (this.waveOrigin - pointCoord.y);
+        var theta = Math.sin(phi);
+
+        return {
+            x: pointCoord.x + distance * Math.sin(theta),
+            y: pointCoord.y
+                + distance * Math.cos(theta)
+                + amplitude * Math.cos(phi),
+        };
+    }
+
+    /*
+     * Re-initialize coordinate system after changing modelDimensions and modelOrigin
+     */
+    this.init();
+}
+
+SymLambWaveModel = function(params, dimensions) {
+    Model.call(this, params, dimensions);
+
+    this.waveOrigin = this.dimensions.height / 2.0;
+    this.modelDimensions =
+        {width: this.modelDimensions.width, height: this.modelDimensions.height / 2.0};
+    this.modelOrigin =
+        {x: this.modelOrigin.x,
+         y: this.waveOrigin - this.modelDimensions.height / 2.0};
+
+    this.movePoint = function(pointCoord, time) {
+        var amplitude = params.amplitude;
+        var scale = params.scale;
+        var timeScale = params.timeScale;
+
+        var phi = pointCoord.x * scale - time * timeScale;
+        var distance = (this.waveOrigin - pointCoord.y) / (this.modelDimensions.height / 2.0);
+
+        return {
+            x: pointCoord.x + amplitude * Math.cos(distance) * Math.sin(phi),
+            y: pointCoord.y + amplitude * distance * Math.cos(phi),
+        };
+    }
+
+    /*
+     * Re-initialize coordinate system after changing modelDimensions and modelOrigin
+     */
+    this.init();
 }
