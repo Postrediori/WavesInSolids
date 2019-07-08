@@ -50,10 +50,12 @@ where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub
 
 [Rayleigh waves](https://en.wikipedia.org/wiki/Rayleigh_wave) are a type of surface
 acoustic wave that travel along the surface of solids.
+There are two components in a motion of a particle disturbed by a Rayleigh wave:
+horizontal and vertical that totals in movement along an ellipse.
 
 The equation of a Rayleigh wave is given by:
 
-![Rayleigh Wave equation](images/RayleighWaveEq.png)
+![Rayleigh Wave equation](images/RayleighWaveEqAll.png)
 
 where *&phi;* is wave phase in a point,
 *%delta;* is dimensionless depth,
