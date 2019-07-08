@@ -63,3 +63,18 @@ where *&phi;* is wave phase in a point,
 *h* is total medium depth,
 *A<sub>x</sub>* and *A<sub>y</sub>* are horizontal and vertical
 amplitudes of the Rayleigh wave respectively.
+
+### Lamb waves
+
+[Lamb waves](https://en.wikipedia.org/wiki/Lamb_waves)
+propagate in solid plates. They are a combination of standing waves and
+elastic propagational waves that, like Rayleigh waves, are constrained by
+the elastic properties of the surface(s) that guide them.
+
+There are two modes of Lamb waves: symmetrical and antisymmetric.
+
+Their properties turned out to be quite complex. Since the 1990s,
+the understanding and utilization of Lamb waves has advanced greatly, thanks
+to the rapid increase in the availability of computing power. Lamb's theoretical
+formulations have found substantial practical application, especially in the field
+of nondestructive testing.
