@@ -12,8 +12,6 @@
     </head>
 
     <body>
-        <h1>Waves in Solids</h1>
-
         <div id="hud">
             <div class="hud-panel top-right">
             <a class="link" href="http://github.com/Postrediori/WavesInSolids">Waves in Solids</a> (JavaScript) 
@@ -32,6 +30,7 @@
             <input type="hidden" name="marker-history-len" value="75" />
         </form>
         
+        <div id="ui">
         <div id="models-list">
             <a class="button selected-button model-switch" href="#pwave">P-wave</a>
             <a class="button model-switch" href="#swave">S-wave</a>
@@ -40,46 +39,58 @@
             <a class="button model-switch" href="#rayleighwave">Rayleigh wave</a>
         </div>
         
-        <p class="info-block" id="pwave-info">
-            The equation of a P-wave is given by: <br />
+        <div id="info-blocks">
+        <div class="info-block" id="pwave-info">
+            <p>A <em>P-wave</em> or <em>primary wave</em> is formed from alternating
+            compressions and rarefactions. During earthquakes P-waves travel faster
+            than other seismic waves and hence are the first signal from an earthquake
+            to arrive at any affected location or at a seismograph.</p>
+            <p>The equation of a P-wave is given by:</p>
             <img src="images/pwave.png" alt="P-wave Equation" />
-        </p>
+        </div>
         
-        <p class="info-block hidden-block" id="swave-info">
-            The equation of an S-wave is given by: <br />
+        <div class="info-block hidden-block" id="swave-info">
+            <p>An <em>S-wave</em> or <em>secondary wave</em> is formed ad oscillations
+            of the particles of the medium is perpendicular to the direction of
+            wave propagation. Because S-waves travel
+            slower in rock than P-waves, during earthquakes they arrive after the
+            primary compressional wave on an earthquake seismogram.</p>
+            <p>The equation of an S-wave is given by:</p>
             <img src="images/swave.png" alt="S-wave Equation" />
-        </p>
+        </div>
         
-        <p class="info-block hidden-block" id="radialpwave-info">
-            The equation of a radial P-wave is given by: <br />
-            <img src="images/radialpwave.png" alt="Radial P-wave Equation" /><br />
-            where <em>&theta;</em>, <em>r</em> are the polar coordinates of a point
+        <div class="info-block hidden-block" id="radialpwave-info">
+            <p>The equation of a radial P-wave is given by:</p>
+            <img src="images/radialpwave.png" alt="Radial P-wave Equation" />
+            <p>where <em>&theta;</em>, <em>r</em> are the polar coordinates of a point
             <em>(x<sub>0</sub>, y<sub>0</sub>)</em> with respect
-            to the wave origin point <em>C(x<sub>c</sub>, y<sub>c</sub>)</em>.
-        </p>
+            to the wave origin point <em>C(x<sub>c</sub>, y<sub>c</sub>)</em>.</p>
+        </div>
         
-        <p class="info-block hidden-block" id="radialswave-info">
-            The equation of a radial S-wave is given by: <br />
-            <img src="images/radialswave.png" alt="Radial S-wave Equation" />,&nbsp;
-            <img src="images/radialswave1.png" alt="Shear Angle Equation" /><br />
-            where <em>&psi;</em> is shear angle of a point,
+        <div class="info-block hidden-block" id="radialswave-info">
+            <p>The equation of a radial S-wave is given by: </p>
+            <img src="images/radialswave.png" alt="Radial S-wave Equation" />
+            <img src="images/radialswave1.png" alt="Shear Angle Equation" />
+            <p>where <em>&psi;</em> is shear angle of a point,
             <em>&theta;</em>, <em>r</em> are the polar coordinates of a point
             <em>(x<sub>0</sub>, y<sub>0</sub>)</em> with respect
-            to the wave origin point <em>C(x<sub>c</sub>, y<sub>c</sub>)</em>.
-        </p>
+            to the wave origin point <em>C(x<sub>c</sub>, y<sub>c</sub>)</em>.</p>
+        </div>
         
-        <p class="info-block hidden-block" id="rayleighwave-info">
-            <a href="https://en.wikipedia.org/wiki/Rayleigh_wave">Rayleigh waves</a>
-            are a type of surface acoustic wave that travel along the surface of solids.<br />
-            The equation of a Rayleigh wave is given by: <br />
-            <img src="images/RayleighWaveEq.png" alt="Rayleigh wave Equation" /><br />
-            where <em>&phi;</em> is wave phase in a point,
-            <em>&delta;</em> is dimensionless depth of a point,
+        <div class="info-block hidden-block" id="rayleighwave-info">
+            <p><a href="https://en.wikipedia.org/wiki/Rayleigh_wave">Rayleigh waves</a>
+            are a type of surface acoustic wave that travel along the surface of solids.
+            The equation of a Rayleigh wave is given by:</p>
+            <img src="images/RayleighWaveEq.png" alt="Rayleigh wave Equation" />
+            <p>where <em>&phi;</em> is wave phase in a point,
+            <em>&delta;</em> is dimensionless depth,
             <em>d</em> is depth of a point <em>(x<sub>0</sub>, y<sub>0</sub>)</em> with respect to medium top level <em>Y</em>,
             <em>h</em> is total medium depth,
             <em>A<sub>x</sub></em> and <em>A<sub>y</sub></em> are horizontal and vertical
-            amplitudes of the Rayleigh wave respectively.
-        </p>
+            amplitudes of the Rayleigh wave respectively.</p>
+        </div>
+        </div>
+        </div>
       
         <svg id="canvas" width="640" height="480"></svg>
 

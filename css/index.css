@@ -39,12 +39,25 @@ svg > g > line.marker-history-line {
     stroke-width: 2;
 }
 
+div#ui {
+    display: flex;
+    flex-direction: column;
+    
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    overflow: hidden;
+    
+    width: 300px;
+}
+
 /*
  * Model controls
  */
 
-div#models-list {  
+div#models-list {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -61,6 +74,8 @@ a.button {
     display: inline-block;
     margin-left: 10px;
     margin-bottom: .5rem;
+    
+    width: 150px;
     
     color: #fff;
     background-color: #333;
@@ -84,20 +99,25 @@ a.selected-button {
 /*
  * Text
  */
-p.info-block {
-    width: 50%;
-    transform: translate(50%, 0);
+div#info-blocks {
+    display: flex;
+    flex-direction: column;
 }
 
-p.info-block > span {
+.info-block {
+    /*width: 50%;
+    transform: translate(50%, 0); */
+}
+
+.info-block > span {
     font-weight: bold;
 }
 
-p.hidden-block {
+.hidden-block {
     display: none;
 }
 
-p.info-block > img {
+.info-block > img {
     display: inline-block;
     vertical-align: middle;
 }

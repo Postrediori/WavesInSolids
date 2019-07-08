@@ -56,6 +56,7 @@ The equation of a Rayleigh wave is given by:
 ![Rayleigh Wave equation](images/RayleighWaveEq.png)
 
 where *&phi;* is wave phase in a point,
+*%delta;* is dimensionless depth,
 *d* is depth of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to medium top level *Y*,
 *h* is total medium depth,
 *A<sub>x</sub>* and *A<sub>y</sub>* are horizontal and vertical
