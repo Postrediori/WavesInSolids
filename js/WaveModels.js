@@ -56,10 +56,6 @@ Model = function(params, dimensions) {
     }
     
     this.updateHorizontal = function(time) {
-        var amplitude = params.amplitude;
-        var scale = params.scale;
-        var timeScale = params.timeScale;
-
         for (var j = 0; j < this.horizontalLines; j++) {
             for (var i = 0; i < this.pointsCount; i++) {
                 var point = this.horizontalCoords[j][i];
@@ -74,10 +70,6 @@ Model = function(params, dimensions) {
     }
 
     this.updateVertical = function(time) {
-        var amplitude = params.amplitude;
-        var scale = params.scale;
-        var timeScale = params.timeScale;
-
         for (var j = 0; j < this.verticalLines; j++) {
             for (var i = 0; i < this.pointsCount; i++) {
                 var point = this.verticalCoords[j][i];
