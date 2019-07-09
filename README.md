@@ -10,7 +10,7 @@ A P-wave is one of the two main types of elastic body waves, called seismic wave
 
 The equation of simple P-wave is given by:
 
-![P-wave equation](images/pwave.png)
+![P-wave equation](images/PWaveEq.png)
 
 ### S-wave
 
@@ -22,7 +22,7 @@ The S-wave is a transverse wave, meaning that, in the simplest situation, the os
 
 The equation of simple S-wave is given by:
 
-![S-wave equation](images/swave.png)
+![S-wave equation](images/SWaveEq.png)
 
 ### Radial P-wave
 
@@ -30,7 +30,7 @@ The equation of simple S-wave is given by:
 
 The equation of a radial P-wave is given by:
 
-![Radial P-wave equation](images/radialpwave.png)
+![Radial P-wave equation](images/RadialPWaveEq.png)
 
 where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to the wave origin point *C(x<sub>c</sub>, y<sub>c</sub>)*.
 
@@ -40,7 +40,7 @@ where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub
 
 The equation of a radial S-wave is given by:
 
-![Radial S-wave equation](images/radialswave.png)
+![Radial S-wave equation](images/RadialSWaveEq.png)
 
 where *&theta;*, *r* are the polar coordinates of a point *(x<sub>0</sub>, y<sub>0</sub>)* with respect to the wave origin point *C(x<sub>c</sub>, y<sub>c</sub>)*.
 
