@@ -198,26 +198,30 @@ window.onload = function() {
         initSvgPoints(modelParams);
     }
 
-    function update() {
+    var lastTime = (new Date()).getTime();
+    var render = function render (currentTime) {
+        var deltaTime = (currentTime - lastTime) / 1000 || 0.0;
+        lastTime = currentTime;
+
         // Update model
-        model.update(Date.now());
+        model.update(deltaTime);
 
         // Update markey point and history
-        var markerPoint = markerPos.dataSet === 'horizontal'
-            ? model.horizontalCoords[markerPos.j][markerPos.i]
-            : model.verticalCoords[markerPos.j][markerPos.i];
+        var markerPoint = markerPos.dataSet === 'horizontal' ?
+            model.horizontalCoords[markerPos.j][markerPos.i] :
+            model.verticalCoords[markerPos.j][markerPos.i];
         markerHistory.push(markerPoint);
 
         // Update SVG
         updateSvgPoints(modelParams, model);
 
-        setTimeout(update, 1000 / modelParams.fps);
-    }
+        requestAnimationFrame(render);
+    };
 
     function main() {
         init();
 
-        update();
+        render();
     }
 
     /*

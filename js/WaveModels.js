@@ -48,7 +48,6 @@ MarkerHistory = function(historyLen) {
 }
 
 ModelParameters = function(data) {
-    this.fps = parseInt(data["fps"].value);
     this.pointsCount = parseInt(data["points-count"].value);
     this.horizontalLines = parseInt(data["horizontal-lines"].value);
     this.verticalLines = parseInt(data["vertical-lines"].value);
@@ -60,6 +59,7 @@ ModelParameters = function(data) {
 }
 
 Model = function(params, dimensions) {
+    this.time = 0.0;
     this.params = params;
     this.dimensions = dimensions;
     this.modelDimensions =
@@ -132,9 +132,10 @@ Model = function(params, dimensions) {
         }
     }
     
-    this.update = function(time) {
-        this.updateHorizontal(time);
-        this.updateVertical(time);
+    this.update = function(deltaTime) {
+        this.time += deltaTime;
+        this.updateHorizontal(this.time);
+        this.updateVertical(this.time);
     }
     
     this.init();
