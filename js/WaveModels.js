@@ -62,11 +62,14 @@ Model = function(params, dimensions) {
     this.time = 0.0;
     this.params = params;
     this.dimensions = dimensions;
-    this.modelDimensions =
-        {width: this.dimensions.width * 0.85, height: this.dimensions.height * 0.85};
-    this.modelOrigin =
-        {x: (this.dimensions.width - this.modelDimensions.width) / 2.0,
-         y: (this.dimensions.height - this.modelDimensions.height) / 2.0};
+    this.modelDimensions = {
+        width: this.dimensions.width * 0.85,
+        height: this.dimensions.height * 0.85,
+    };
+    this.modelOrigin = {
+        x: (this.dimensions.width - this.modelDimensions.width) / 2.0,
+        y: (this.dimensions.height - this.modelDimensions.height) / 2.0,
+    };
     this.horizontalLines = this.params.horizontalLines;
     this.verticalLines = this.params.verticalLines;
     this.pointsCount = this.params.pointsCount;
@@ -81,7 +84,12 @@ Model = function(params, dimensions) {
             var pointY0 = j * dY + this.modelOrigin.y;
             for (var i = 0; i<this.pointsCount; i++) {
                 var pointX0 = i * dX + this.modelOrigin.x;
-                this.horizontalCoords[j][i] = {x0:pointX0, y0:pointY0, x:0, y:0};
+                this.horizontalCoords[j][i] = {
+                    x0: pointX0,
+                    y0: pointY0,
+                    x: 0,
+                    y: 0,
+                };
             }
         }
         
@@ -92,15 +100,20 @@ Model = function(params, dimensions) {
             var pointX0 = j * dX + this.modelOrigin.x;
             for (var i = 0; i<this.pointsCount; i++) {
                 var pointY0 = i * dY + this.modelOrigin.y;
-                this.verticalCoords[j][i] = {x0:pointX0, y0:pointY0, x:0, y:0};
+                this.verticalCoords[j][i] = {
+                    x0: pointX0,
+                    y0: pointY0,
+                    x: 0,
+                    y: 0,
+                };
             }
         }
     }
 
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         return {
-            x: pointCoord.x0,
-            y: pointCoord.y0,
+            x: coord.x,
+            y: coord.y,
         };
     }
     
@@ -109,10 +122,10 @@ Model = function(params, dimensions) {
             for (var i = 0; i < this.pointsCount; i++) {
                 var point = this.horizontalCoords[j][i];
                 
-                var newCoord = this.movePoint({x:point.x0, y:point.y0}, time);
+                var displacement = this.getDisplacement({x:point.x0, y:point.y0}, time);
                 
-                point.x = newCoord.x;
-                point.y = newCoord.y;
+                point.x = point.x0 + displacement.x;
+                point.y = point.y0 + displacement.y;
                 this.horizontalCoords[j][i] = point;
             }
         }
@@ -123,10 +136,10 @@ Model = function(params, dimensions) {
             for (var i = 0; i < this.pointsCount; i++) {
                 var point = this.verticalCoords[j][i];
                 
-                var newCoord = this.movePoint({x:point.x0, y:point.y0}, time);
+                var displacement = this.getDisplacement({x:point.x0, y:point.y0}, time);
                 
-                point.x = newCoord.x;
-                point.y = newCoord.y;
+                point.x = point.x0 + displacement.x;
+                point.y = point.y0 + displacement.y;
                 this.verticalCoords[j][i] = point;
             }
         }
@@ -144,14 +157,14 @@ Model = function(params, dimensions) {
 SWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
         return {
-            x: pointCoord.x,
-            y: pointCoord.y + amplitude * Math.sin(pointCoord.x * scale - time * timeScale),
+            x: 0,
+            y: amplitude * Math.sin(coord.x * scale - time * timeScale),
         };
     }
 }
@@ -159,14 +172,14 @@ SWaveModel = function(params, dimensions) {
 PWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
         return {
-            x: pointCoord.x + amplitude * Math.cos(pointCoord.x * scale - time * timeScale),
-            y: pointCoord.y,
+            x: amplitude * Math.cos(coord.x * scale - time * timeScale),
+            y: 0,
         };
     }
 }
@@ -174,22 +187,23 @@ PWaveModel = function(params, dimensions) {
 RadialPWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.waveCenter =
-        {x: this.dimensions.width / 2.0,
-         y: this.dimensions.height / 2.0};
+    this.waveCenter = {
+        x: this.dimensions.width / 2.0,
+        y: this.dimensions.height / 2.0
+    };
      
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var radialCoords = CartesianToRadial(pointCoord, this.waveCenter);
+        var radialCoords = CartesianToRadial(coord, this.waveCenter);
         
         var q = radialCoords.r * scale - time * timeScale;
         
         return {
-            x: pointCoord.x + amplitude * Math.cos(radialCoords.theta) * Math.cos(q),
-            y: pointCoord.y + amplitude * Math.sin(radialCoords.theta) * Math.cos(q),
+            x: amplitude * Math.cos(radialCoords.theta) * Math.cos(q),
+            y: amplitude * Math.sin(radialCoords.theta) * Math.cos(q),
         };
     }
 }
@@ -197,23 +211,24 @@ RadialPWaveModel = function(params, dimensions) {
 RadialSWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.waveCenter =
-        {x: this.dimensions.width / 2.0,
-         y: this.dimensions.height / 2.0};
+    this.waveCenter = {
+        x: this.dimensions.width / 2.0,
+        y: this.dimensions.height / 2.0,
+    };
      
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var radialCoords = CartesianToRadial(pointCoord, this.waveCenter);
+        var radialCoords = CartesianToRadial(coord, this.waveCenter);
         
         var q = scale * radialCoords.r - time * timeScale;
         var theta = radialCoords.theta + amplitude / radialCoords.r * Math.cos(q);
         
         return {
-            x: this.waveCenter.x + radialCoords.r * Math.cos(theta),
-            y: this.waveCenter.y + radialCoords.r * Math.sin(theta),
+            x: this.waveCenter.x - coord.x + radialCoords.r * Math.cos(theta),
+            y: this.waveCenter.y - coord.y + radialCoords.r * Math.sin(theta),
         };
     }
 }
@@ -225,7 +240,7 @@ RayleighWaveModel = function(params, dimensions) {
     this.modelTop = this.modelOrigin.y;
     this.modelBottom = this.modelOrigin.y + this.depth / 2.0;
      
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
@@ -238,7 +253,7 @@ RayleighWaveModel = function(params, dimensions) {
         var yAmplitude = amplitude / Math.sqrt(2.0);
         
         // Depth of a point
-        var currentDepth = pointCoord.y - this.modelTop;
+        var currentDepth = coord.y - this.modelTop;
         
         // Horizontal amplitude is a cosine function.
         // X Amplitude = max at the top and 0 at the bottom
@@ -248,12 +263,12 @@ RayleighWaveModel = function(params, dimensions) {
         // Vertical amplitude is a linear function.
         var currentYAmplitude = yAmplitude
             * (1.0 - currentDepth / this.modelDepth);
+
+        var phi = coord.x * scale - time * timeScale;
         
         return {
-            x: pointCoord.x
-                + currentXAmplitude * Math.cos(pointCoord.x * scale - time * timeScale),
-            y: pointCoord.y
-                + currentYAmplitude * Math.sin(pointCoord.x * scale - time * timeScale),
+            x: currentXAmplitude * Math.cos(phi),
+            y: currentYAmplitude * Math.sin(phi),
         };
     }
 }
@@ -262,28 +277,29 @@ AsymLambWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
 
     this.waveOrigin = this.dimensions.height / 2.0;
-    this.modelDimensions =
-        {width: this.modelDimensions.width, height: this.modelDimensions.height / 2.0};
-    this.modelOrigin =
-        {x: this.modelOrigin.x,
-         y: this.waveOrigin - this.modelDimensions.height / 2.0};
+    this.modelDimensions = {
+        width: this.modelDimensions.width,
+        height: this.modelDimensions.height / 2.0,
+    };
+    this.modelOrigin = {
+        x: this.modelOrigin.x,
+        y: this.waveOrigin - this.modelDimensions.height / 2.0
+    };
 
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var lambAmplitude = params.lambAmplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var phi = pointCoord.x * scale - time * timeScale;
+        var phi = coord.x * scale - time * timeScale;
 
-        var distance = lambAmplitude * (this.waveOrigin - pointCoord.y);
+        var distance = lambAmplitude * (this.waveOrigin - coord.y);
         var theta = Math.sin(phi);
 
         return {
-            x: pointCoord.x + distance * Math.sin(theta),
-            y: pointCoord.y
-                + distance * Math.cos(theta)
-                + amplitude * Math.cos(phi),
+            x: distance * Math.sin(theta),
+            y: distance * Math.cos(theta) + amplitude * Math.cos(phi),
         };
     }
 
@@ -297,23 +313,26 @@ SymLambWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
 
     this.waveOrigin = this.dimensions.height / 2.0;
-    this.modelDimensions =
-        {width: this.modelDimensions.width, height: this.modelDimensions.height / 2.0};
-    this.modelOrigin =
-        {x: this.modelOrigin.x,
-         y: this.waveOrigin - this.modelDimensions.height / 2.0};
+    this.modelDimensions = {
+        width: this.modelDimensions.width,
+        height: this.modelDimensions.height / 2.0,
+    };
+    this.modelOrigin = {
+        x: this.modelOrigin.x,
+        y: this.waveOrigin - this.modelDimensions.height / 2.0,
+    };
 
-    this.movePoint = function(pointCoord, time) {
+    this.getDisplacement = function(coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
 
-        var phi = pointCoord.x * scale - time * timeScale;
-        var distance = (this.waveOrigin - pointCoord.y) / (this.modelDimensions.height / 2.0);
+        var phi = coord.x * scale - time * timeScale;
+        var distance = (this.waveOrigin - coord.y) / (this.modelDimensions.height / 2.0);
 
         return {
-            x: pointCoord.x + amplitude * Math.cos(distance) * Math.sin(phi),
-            y: pointCoord.y + amplitude * distance * Math.cos(phi),
+            x: amplitude * Math.cos(distance) * Math.sin(phi),
+            y: amplitude * distance * Math.cos(phi),
         };
     }
 

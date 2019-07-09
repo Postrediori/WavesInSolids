@@ -16,7 +16,11 @@ window.onload = function() {
 
     var model = pWaveModel;
     
-    var markerPos = {dataSet: 'horizontal', i: Math.floor(model.pointsCount / 2), j:0};
+    var markerPos = {
+        dataSet: 'horizontal',
+        i: Math.floor(model.pointsCount / 2),
+        j: 0
+    };
     var markerHistory = new MarkerHistory(modelParams.markerHistoryLen);
     
     /*
@@ -24,7 +28,12 @@ window.onload = function() {
      */
     function setMarker(params, model, coord) {
         var flag = false;
-        var nearestPoint = {dataSet: '', j: 0, i: 0, distance: 0};
+        var nearestPoint = {
+            dataSet: '',
+            j: 0,
+            i: 0,
+            distance: 0
+        };
         
         for (var j = 0; j < params.horizontalLines; j++) {
             for (var i = 0; i < params.pointsCount; i++) {
@@ -166,9 +175,9 @@ window.onload = function() {
         }
 
         // Update marker
-        var markerPoint = markerPos.dataSet === 'horizontal'
-            ? model.horizontalCoords[markerPos.j][markerPos.i]
-            : model.verticalCoords[markerPos.j][markerPos.i];
+        var markerPoint = markerPos.dataSet === 'horizontal' ?
+            model.horizontalCoords[markerPos.j][markerPos.i] :
+            model.verticalCoords[markerPos.j][markerPos.i];
         var el = document.getElementById('marker-0');
         el.setAttribute('cx', markerPoint.x.toString());
         el.setAttribute('cy', markerPoint.y.toString());
@@ -230,19 +239,18 @@ window.onload = function() {
     var modelSwitchers = document.getElementsByClassName("model-switch");
     var modelInfoBlocks = document.getElementsByClassName("info-block");
     
-    function applyHashChange(){
+    function applyHashChange() {
         var modelId = window.location.hash.substr(1)
         setModel(modelId)
     }
 
-    if(window.location.hash.length > 0){
+    if (window.location.hash.length > 0) {
         applyHashChange()
     }
 
-    window.addEventListener("hashchange", applyHashChange,false);
+    window.addEventListener("hashchange", applyHashChange, false);
 
     function setModel(modelId) {
-
         if (modelId === "pwave") {
             model = pWaveModel;
         }
