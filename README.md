@@ -66,12 +66,17 @@ amplitudes of the Rayleigh wave respectively.
 
 ### Lamb waves
 
+![Symmetric Lamb Wave Screenshot](images/SymLambWaveScreenshot.png)
+
 [Lamb waves](https://en.wikipedia.org/wiki/Lamb_waves)
 propagate in solid plates. They are a combination of standing waves and
 elastic propagational waves that, like Rayleigh waves, are constrained by
 the elastic properties of the surface(s) that guide them.
 
-There are two modes of Lamb waves: symmetrical and antisymmetric.
+There are two modes of Lamb waves implemented in the demo: symmetric (*S<sub>0</sub>-mode*)
+and antisymmetric (*A<sub>0</sub>-mode*) waves.
+
+![Antisymmetric Lamb Wave Screenshot](images/AsymLambWaveScreenshot.png)
 
 Their properties turned out to be quite complex. Since the 1990s,
 the understanding and utilization of Lamb waves has advanced greatly, thanks
