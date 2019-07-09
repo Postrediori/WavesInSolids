@@ -8,7 +8,7 @@ MarkerHistory = function(historyLen) {
             this.historyPoints[i] = {
                 x: 0,
                 y: 0,
-                filled: false
+                filled: false,
             };
         }
     }
@@ -18,7 +18,7 @@ MarkerHistory = function(historyLen) {
         this.historyPoints.push({
             x: coord.x,
             y: coord.y,
-            filled: true
+            filled: true,
         });
     }
     
@@ -35,8 +35,10 @@ MarkerHistory = function(historyLen) {
         var point1 = this.historyPoints[index];
         var point2 = this.historyPoints[index + 1];
         return {
-            x1: point1.x, y1: point1.y,
-            x2: point2.x, y2: point2.y
+            x1: point1.x,
+            y1: point1.y,
+            x2: point2.x,
+            y2: point2.y,
         };
     }
     
@@ -147,6 +149,7 @@ Model = function(params, dimensions) {
     
     this.update = function(deltaTime) {
         this.time += deltaTime;
+
         this.updateHorizontal(this.time);
         this.updateVertical(this.time);
     }
@@ -187,9 +190,9 @@ PWaveModel = function(params, dimensions) {
 RadialPWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.waveCenter = {
+    this.waveOrigin = {
         x: this.dimensions.width / 2.0,
-        y: this.dimensions.height / 2.0
+        y: this.dimensions.height / 2.0,
     };
      
     this.getDisplacement = function(coord, time) {
@@ -197,7 +200,7 @@ RadialPWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var radialCoords = CartesianToRadial(coord, this.waveCenter);
+        var radialCoords = CartesianToRadial(coord, this.waveOrigin);
         
         var q = radialCoords.r * scale - time * timeScale;
         
@@ -211,7 +214,7 @@ RadialPWaveModel = function(params, dimensions) {
 RadialSWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.waveCenter = {
+    this.waveOrigin = {
         x: this.dimensions.width / 2.0,
         y: this.dimensions.height / 2.0,
     };
@@ -221,14 +224,18 @@ RadialSWaveModel = function(params, dimensions) {
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var radialCoords = CartesianToRadial(coord, this.waveCenter);
+        var radialCoords = CartesianToRadial(coord, this.waveOrigin);
+        var deltaOrigin = {
+            x: this.waveOrigin.x - coord.x,
+            y: this.waveOrigin.y - coord.y,
+        };
         
         var q = scale * radialCoords.r - time * timeScale;
         var theta = radialCoords.theta + amplitude / radialCoords.r * Math.cos(q);
         
         return {
-            x: this.waveCenter.x - coord.x + radialCoords.r * Math.cos(theta),
-            y: this.waveCenter.y - coord.y + radialCoords.r * Math.sin(theta),
+            x: deltaOrigin.x + radialCoords.r * Math.cos(theta),
+            y: deltaOrigin.y + radialCoords.r * Math.sin(theta),
         };
     }
 }
@@ -238,10 +245,8 @@ RayleighWaveModel = function(params, dimensions) {
     
     this.modelDepth = this.modelDimensions.height;
     this.modelTop = this.modelOrigin.y;
-    this.modelBottom = this.modelOrigin.y + this.depth / 2.0;
      
     this.getDisplacement = function(coord, time) {
-        var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
@@ -249,26 +254,28 @@ RayleighWaveModel = function(params, dimensions) {
         // are calculated as catheti of a right triangle
         // with amplitude as a hypothenuse.
         // TODO: Adjust two amplitudes independently.
-        var xAmplitude = amplitude / Math.sqrt(2.0);
-        var yAmplitude = amplitude / Math.sqrt(2.0);
+        var amplitude = {
+            x: params.amplitude / Math.sqrt(2.0),
+            y: params.amplitude / Math.sqrt(2.0),
+        };
         
         // Depth of a point
         var currentDepth = coord.y - this.modelTop;
         
-        // Horizontal amplitude is a cosine function.
-        // X Amplitude = max at the top and 0 at the bottom
-        var currentXAmplitude = xAmplitude
-            * Math.exp(-currentDepth / this.modelDepth);
-            
-        // Vertical amplitude is a linear function.
-        var currentYAmplitude = yAmplitude
-            * (1.0 - currentDepth / this.modelDepth);
+        var currentAmplitude = {
+            // Horizontal amplitude is a cosine function.
+            // X Amplitude = max at the top and 0 at the bottom
+            x: amplitude.x * Math.exp(-currentDepth / this.modelDepth),
 
+            // Vertical amplitude is a linear function.
+            y: amplitude.y * (1.0 - currentDepth / this.modelDepth),
+        };
+        
         var phi = coord.x * scale - time * timeScale;
         
         return {
-            x: currentXAmplitude * Math.cos(phi),
-            y: currentYAmplitude * Math.sin(phi),
+            x: currentAmplitude.x * Math.cos(phi),
+            y: currentAmplitude.y * Math.sin(phi),
         };
     }
 }
