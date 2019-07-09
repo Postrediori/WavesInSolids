@@ -1,4 +1,52 @@
 
+MarkerHistory = function(historyLen) {
+    this.historyLen = historyLen;
+    this.historyPoints = new Array(this.historyLen);
+    
+    this.clear = function() {
+        for (var i = 0; i < this.historyLen; i++) {
+            this.historyPoints[i] = {
+                x: 0,
+                y: 0,
+                filled: false
+            };
+        }
+    }
+    
+    this.push = function(coord) {
+        this.historyPoints.shift();
+        this.historyPoints.push({
+            x: coord.x,
+            y: coord.y,
+            filled: true
+        });
+    }
+    
+    this.hasHistory = function(index) {
+        if (index < 0 || index >= this.historyLen) {
+            return false;
+        }
+        var point1 = this.historyPoints[index];
+        var point2 = this.historyPoints[index + 1];
+        return (point1.filled && point2.filled);
+    }
+    
+    this.getHistory = function(index) {
+        var point1 = this.historyPoints[index];
+        var point2 = this.historyPoints[index + 1];
+        return {
+            x1: point1.x, y1: point1.y,
+            x2: point2.x, y2: point2.y
+        };
+    }
+    
+    this.init = function() {
+        this.clear();
+    }
+    
+    this.init();
+}
+
 ModelParameters = function(data) {
     this.fps = parseInt(data["fps"].value);
     this.pointsCount = parseInt(data["points-count"].value);
