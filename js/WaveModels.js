@@ -243,10 +243,10 @@ var RadialPWaveModel = function(params, dimensions) {
 
         convertCartesianToRadial(radialCoords, coord, this.waveOrigin);
         
-        var q = radialCoords.r * scale - time * timeScale;
+        var q = radialCoords[R_INDEX] * scale - time * timeScale;
         
-        displacement[X_INDEX] = amplitude * Math.cos(radialCoords.theta) * Math.cos(q);
-        displacement[Y_INDEX] = amplitude * Math.sin(radialCoords.theta) * Math.cos(q);
+        displacement[X_INDEX] = amplitude * Math.cos(radialCoords[THETA_INDEX]) * Math.cos(q);
+        displacement[Y_INDEX] = amplitude * Math.sin(radialCoords[THETA_INDEX]) * Math.cos(q);
 
         return displacement;
     }
