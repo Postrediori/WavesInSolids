@@ -126,28 +126,23 @@ div#info-blocks {
  * HUD
  */
 
-a.link {
-  color: #d00;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-a.link:hover {
-  color: #f00;
-  text-decoration: none;
-}
-
-div#hud > div.hud-panel {
+ #hud {
     position: absolute;
+    top: 0px;
+    right: 0px;
     padding: 5px;
 }
 
-div#hud > div.hud-panel.top-right {
-    top: 0px;
-    right: 0px;
-    text-align: right;
+#hud a {
+    text-decoration: underline;
+    color: #333333;
+    font-weight: bold;
 }
 
-#hud {
-  display: flex;
+#hud a:link {
+    color: #333333;
+}
+
+#hud a:visited {
+    color: #333333;
 }
