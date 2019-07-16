@@ -1,5 +1,6 @@
+'use strict';
 
-MarkerHistory = function(historyLen) {
+var MarkerHistory = function(historyLen) {
     this.historyLen = historyLen;
     this.historyPoints = new Array(this.historyLen);
     
@@ -49,7 +50,7 @@ MarkerHistory = function(historyLen) {
     this.init();
 }
 
-ModelParameters = function(data) {
+var ModelParameters = function(data) {
     this.pointsCount = parseInt(data["points-count"].value);
     this.horizontalLines = parseInt(data["horizontal-lines"].value);
     this.verticalLines = parseInt(data["vertical-lines"].value);
@@ -60,7 +61,7 @@ ModelParameters = function(data) {
     this.markerHistoryLen = parseInt(data["marker-history-len"].value);
 }
 
-Model = function(params, dimensions) {
+var Model = function(params, dimensions) {
     this.time = 0.0;
     this.params = params;
     this.dimensions = dimensions;
@@ -157,7 +158,7 @@ Model = function(params, dimensions) {
     this.init();
 }
 
-SWaveModel = function(params, dimensions) {
+var SWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.getDisplacement = function(coord, time) {
@@ -172,7 +173,7 @@ SWaveModel = function(params, dimensions) {
     }
 }
 
-PWaveModel = function(params, dimensions) {
+var PWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.getDisplacement = function(coord, time) {
@@ -187,7 +188,7 @@ PWaveModel = function(params, dimensions) {
     }
 }
 
-RadialPWaveModel = function(params, dimensions) {
+var RadialPWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.waveOrigin = {
@@ -211,7 +212,7 @@ RadialPWaveModel = function(params, dimensions) {
     }
 }
 
-RadialSWaveModel = function(params, dimensions) {
+var RadialSWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.waveOrigin = {
@@ -240,7 +241,7 @@ RadialSWaveModel = function(params, dimensions) {
     }
 }
 
-RayleighWaveModel = function(params, dimensions) {
+var RayleighWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
     this.modelDepth = this.modelDimensions.height;
@@ -280,7 +281,7 @@ RayleighWaveModel = function(params, dimensions) {
     }
 }
 
-AsymLambWaveModel = function(params, dimensions) {
+var AsymLambWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
 
     this.waveOrigin = this.dimensions.height / 2.0;
@@ -316,7 +317,7 @@ AsymLambWaveModel = function(params, dimensions) {
     this.init();
 }
 
-SymLambWaveModel = function(params, dimensions) {
+var SymLambWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
 
     this.waveOrigin = this.dimensions.height / 2.0;

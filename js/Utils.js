@@ -1,3 +1,4 @@
+'use strict';
 
 function CartesianToRadial(coord, origin) {
     var dX = coord.x - origin.x;
