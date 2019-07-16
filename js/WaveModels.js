@@ -208,7 +208,7 @@ var SWaveModel = function(params, dimensions) {
         var timeScale = params.timeScale;
         
         displacement[X_INDEX] = 0.0;
-        displacement[Y_INDEX] = amplitude * Math.sin(coord[X_INDEX] * scale - time * timeScale);
+        displacement[Y_INDEX] = amplitude * Math.cos(coord[X_INDEX] * scale - time * timeScale);
 
         return displacement;
     }
