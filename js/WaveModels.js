@@ -301,13 +301,14 @@ var RayleighWaveModel = function(params, dimensions) {
         // Depth of a point
         var currentDepth = coord[Y_INDEX] - this.modelTop;
         
+        var delta = currentDepth / this.modelDepth;
         var currentAmplitude = [
             // Horizontal amplitude is a cosine function.
             // X Amplitude = max at the top and 0 at the bottom
-            amplitude[X_INDEX] * Math.exp(-currentDepth / this.modelDepth),
+            amplitude[X_INDEX] * Math.exp(-delta),
 
             // Vertical amplitude is a linear function.
-            amplitude[Y_INDEX] * (1.0 - currentDepth / this.modelDepth)
+            amplitude[Y_INDEX] * Math.exp(-delta)
         ];
         
         var phi = coord[X_INDEX] * scale - time * timeScale;
