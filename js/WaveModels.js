@@ -17,8 +17,8 @@ var MarkerHistory = function(historyLen) {
     this.push = function(coord) {
         this.historyPoints.shift();
         this.historyPoints.push({
-            x: coord.x,
-            y: coord.y,
+            x: coord[X_INDEX],
+            y: coord[Y_INDEX],
             filled: true,
         });
     }
@@ -76,74 +76,115 @@ var Model = function(params, dimensions) {
     this.horizontalLines = this.params.horizontalLines;
     this.verticalLines = this.params.verticalLines;
     this.pointsCount = this.params.pointsCount;
-    this.horizontalCoords = new Array(this.horizontalLines);
-    this.verticalCoords = new Array(this.verticalLines);
+
+    this.horizontalCoords0 = new Float32Array(this.horizontalLines * this.pointsCount * COORD_SIZE);
+    this.horizontalCoords = new Float32Array(this.horizontalLines * this.pointsCount * COORD_SIZE);
+
+    this.verticalCoords0 = new Float32Array(this.verticalLines * this.pointsCount * COORD_SIZE);
+    this.verticalCoords = new Float32Array(this.verticalLines * this.pointsCount * COORD_SIZE);
 
     this.init = function() {
         var dX = this.modelDimensions.width / (this.pointsCount - 1);
         var dY = this.modelDimensions.height / (this.horizontalLines - 1);
+
         for (var j = 0; j < this.horizontalLines; j++) {
-            this.horizontalCoords[j] = new Array(this.pointsCount);
             var pointY0 = j * dY + this.modelOrigin.y;
+
             for (var i = 0; i<this.pointsCount; i++) {
+                var index = this.getIndex(j, i);
                 var pointX0 = i * dX + this.modelOrigin.x;
-                this.horizontalCoords[j][i] = {
-                    x0: pointX0,
-                    y0: pointY0,
-                    x: 0,
-                    y: 0,
-                };
+
+                this.horizontalCoords0[index + X_INDEX] = pointX0;
+                this.horizontalCoords0[index + Y_INDEX] = pointY0;
+
+                this.horizontalCoords[index + X_INDEX] = 0.0;
+                this.horizontalCoords[index + Y_INDEX] = 0.0;
             }
         }
         
         var dX = this.modelDimensions.width / (this.verticalLines - 1);
         var dY = this.modelDimensions.height / (this.pointsCount - 1);
+
         for (var j = 0; j < this.verticalLines; j++) {
-            this.verticalCoords[j] = new Array(this.pointsCount);
             var pointX0 = j * dX + this.modelOrigin.x;
+
             for (var i = 0; i<this.pointsCount; i++) {
+                var index = this.getIndex(j, i);
                 var pointY0 = i * dY + this.modelOrigin.y;
-                this.verticalCoords[j][i] = {
-                    x0: pointX0,
-                    y0: pointY0,
-                    x: 0,
-                    y: 0,
-                };
+
+                this.verticalCoords0[index + X_INDEX] = pointX0;
+                this.verticalCoords0[index + Y_INDEX] = pointY0;
+
+                this.verticalCoords[index + X_INDEX] = 0.0;
+                this.verticalCoords[index + Y_INDEX] = 0.0;
             }
         }
     }
 
-    this.getDisplacement = function(coord, time) {
-        return {
-            x: coord.x,
-            y: coord.y,
-        };
+    this.getDisplacement = function(displacement, coord, time) {
+        displacement[X_INDEX] = 0.0;
+        displacement[Y_INDEX] = 0.0;
+        return displacement;
+    }
+
+    this.getIndex = function(row, col) {
+        return (row * this.pointsCount + col) * COORD_SIZE;
+    }
+
+    this.getCoord = function(coord, data, row, col) {
+        var index = this.getIndex(row, col);
+
+        coord[X_INDEX] = data[index + X_INDEX];
+        coord[Y_INDEX] = data[index + Y_INDEX];
+
+        return coord;
+    }
+
+    this.getHorizontalCoord = function(coord, row, col) {
+        return this.getCoord(coord, this.horizontalCoords, row, col);
+    }
+
+    this.getVerticalCoord = function(coord, row, col) {
+        return this.getCoord(coord, this.verticalCoords, row, col);
+    }
+
+    this.setCoord = function(data, coord, row, col) {
+        var index = this.getIndex(row, col);
+
+        data[index + X_INDEX] = coord[X_INDEX];
+        data[index + Y_INDEX] = coord[Y_INDEX];
     }
     
     this.updateHorizontal = function(time) {
+        var coord = [0.0, 0.0];
+        var displacement = [0.0, 0.0];
+
         for (var j = 0; j < this.horizontalLines; j++) {
             for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.horizontalCoords[j][i];
+                this.getCoord(coord, this.horizontalCoords0, j, i);
                 
-                var displacement = this.getDisplacement({x:point.x0, y:point.y0}, time);
+                this.getDisplacement(displacement, coord, time);
+
+                addCoords(coord, coord, displacement);
                 
-                point.x = point.x0 + displacement.x;
-                point.y = point.y0 + displacement.y;
-                this.horizontalCoords[j][i] = point;
+                this.setCoord(this.horizontalCoords, coord, j, i);
             }
         }
     }
 
     this.updateVertical = function(time) {
+        var coord = [0.0, 0.0];
+        var displacement = [0.0, 0.0];
+
         for (var j = 0; j < this.verticalLines; j++) {
             for (var i = 0; i < this.pointsCount; i++) {
-                var point = this.verticalCoords[j][i];
+                this.getCoord(coord, this.verticalCoords0, j, i);
                 
-                var displacement = this.getDisplacement({x:point.x0, y:point.y0}, time);
+                this.getDisplacement(displacement, coord, time);
+
+                addCoords(coord, coord, displacement);
                 
-                point.x = point.x0 + displacement.x;
-                point.y = point.y0 + displacement.y;
-                this.verticalCoords[j][i] = point;
+                this.setCoord(this.verticalCoords, coord, j, i);
             }
         }
     }
@@ -161,83 +202,80 @@ var Model = function(params, dimensions) {
 var SWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        return {
-            x: 0,
-            y: amplitude * Math.sin(coord.x * scale - time * timeScale),
-        };
+        displacement[X_INDEX] = 0.0;
+        displacement[Y_INDEX] = amplitude * Math.sin(coord[X_INDEX] * scale - time * timeScale);
+
+        return displacement;
     }
 }
 
 var PWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        return {
-            x: amplitude * Math.cos(coord.x * scale - time * timeScale),
-            y: 0,
-        };
+        displacement[X_INDEX] = amplitude * Math.cos(coord[X_INDEX] * scale - time * timeScale);
+        displacement[Y_INDEX] = 0.0;
+
+        return displacement;
     }
 }
 
 var RadialPWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.waveOrigin = {
-        x: this.dimensions.width / 2.0,
-        y: this.dimensions.height / 2.0,
-    };
+    this.waveOrigin = [this.dimensions.width / 2.0, this.dimensions.height / 2.0];
      
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var radialCoords = CartesianToRadial(coord, this.waveOrigin);
+        var radialCoords = [0.0, 0.0];
+
+        convertCartesianToRadial(radialCoords, coord, this.waveOrigin);
         
         var q = radialCoords.r * scale - time * timeScale;
         
-        return {
-            x: amplitude * Math.cos(radialCoords.theta) * Math.cos(q),
-            y: amplitude * Math.sin(radialCoords.theta) * Math.cos(q),
-        };
+        displacement[X_INDEX] = amplitude * Math.cos(radialCoords.theta) * Math.cos(q);
+        displacement[Y_INDEX] = amplitude * Math.sin(radialCoords.theta) * Math.cos(q);
+
+        return displacement;
     }
 }
 
 var RadialSWaveModel = function(params, dimensions) {
     Model.call(this, params, dimensions);
     
-    this.waveOrigin = {
-        x: this.dimensions.width / 2.0,
-        y: this.dimensions.height / 2.0,
-    };
+    this.waveOrigin = [this.dimensions.width / 2.0, this.dimensions.height / 2.0];
      
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var radialCoords = CartesianToRadial(coord, this.waveOrigin);
-        var deltaOrigin = {
-            x: this.waveOrigin.x - coord.x,
-            y: this.waveOrigin.y - coord.y,
-        };
+        var deltaOrigin = [0.0, 0.0];
+        var radialCoords = [0.0, 0.0];
+
+        convertCartesianToRadial(radialCoords, coord, this.waveOrigin);
+
+        subCoords(deltaOrigin, this.waveOrigin, coord);
         
-        var q = scale * radialCoords.r - time * timeScale;
-        var theta = radialCoords.theta + amplitude / radialCoords.r * Math.cos(q);
+        var q = scale * radialCoords[R_INDEX] - time * timeScale;
+        var theta = radialCoords[THETA_INDEX] + amplitude / radialCoords[R_INDEX] * Math.cos(q);
         
-        return {
-            x: deltaOrigin.x + radialCoords.r * Math.cos(theta),
-            y: deltaOrigin.y + radialCoords.r * Math.sin(theta),
-        };
+        displacement[X_INDEX] = deltaOrigin[X_INDEX] + radialCoords[R_INDEX] * Math.cos(theta);
+        displacement[Y_INDEX] = deltaOrigin[Y_INDEX] + radialCoords[R_INDEX] * Math.sin(theta);
+
+        return displacement;
     }
 }
 
@@ -247,7 +285,7 @@ var RayleighWaveModel = function(params, dimensions) {
     this.modelDepth = this.modelDimensions.height;
     this.modelTop = this.modelOrigin.y;
      
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var scale = params.scale;
         var timeScale = params.timeScale;
         
@@ -255,29 +293,29 @@ var RayleighWaveModel = function(params, dimensions) {
         // are calculated as catheti of a right triangle
         // with amplitude as a hypothenuse.
         // TODO: Adjust two amplitudes independently.
-        var amplitude = {
-            x: params.amplitude / Math.sqrt(2.0),
-            y: params.amplitude / Math.sqrt(2.0),
-        };
+        var amplitude = [
+            params.amplitude / Math.sqrt(2.0),
+            params.amplitude / Math.sqrt(2.0)
+        ];
         
         // Depth of a point
-        var currentDepth = coord.y - this.modelTop;
+        var currentDepth = coord[Y_INDEX] - this.modelTop;
         
-        var currentAmplitude = {
+        var currentAmplitude = [
             // Horizontal amplitude is a cosine function.
             // X Amplitude = max at the top and 0 at the bottom
-            x: amplitude.x * Math.exp(-currentDepth / this.modelDepth),
+            amplitude[X_INDEX] * Math.exp(-currentDepth / this.modelDepth),
 
             // Vertical amplitude is a linear function.
-            y: amplitude.y * (1.0 - currentDepth / this.modelDepth),
-        };
+            amplitude[Y_INDEX] * (1.0 - currentDepth / this.modelDepth)
+        ];
         
-        var phi = coord.x * scale - time * timeScale;
+        var phi = coord[X_INDEX] * scale - time * timeScale;
         
-        return {
-            x: currentAmplitude.x * Math.cos(phi),
-            y: currentAmplitude.y * Math.sin(phi),
-        };
+        displacement[X_INDEX] = currentAmplitude[X_INDEX] * Math.cos(phi);
+        displacement[Y_INDEX] = currentAmplitude[Y_INDEX] * Math.sin(phi);
+
+        return displacement;
     }
 }
 
@@ -294,21 +332,21 @@ var AsymLambWaveModel = function(params, dimensions) {
         y: this.waveOrigin - this.modelDimensions.height / 2.0
     };
 
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var amplitude = params.amplitude;
         var lambAmplitude = params.lambAmplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
         
-        var phi = coord.x * scale - time * timeScale;
+        var phi = coord[X_INDEX] * scale - time * timeScale;
 
-        var distance = lambAmplitude * (this.waveOrigin - coord.y);
+        var distance = lambAmplitude * (this.waveOrigin - coord[Y_INDEX]);
         var theta = Math.sin(phi);
 
-        return {
-            x: distance * Math.sin(theta),
-            y: distance * Math.cos(theta) + amplitude * Math.cos(phi),
-        };
+        displacement[X_INDEX] = distance * Math.sin(theta);
+        displacement[Y_INDEX] = distance * Math.cos(theta) + amplitude * Math.cos(phi);
+
+        return displacement;
     }
 
     /*
@@ -330,18 +368,18 @@ var SymLambWaveModel = function(params, dimensions) {
         y: this.waveOrigin - this.modelDimensions.height / 2.0,
     };
 
-    this.getDisplacement = function(coord, time) {
+    this.getDisplacement = function(displacement, coord, time) {
         var amplitude = params.amplitude;
         var scale = params.scale;
         var timeScale = params.timeScale;
 
-        var phi = coord.x * scale - time * timeScale;
-        var distance = (this.waveOrigin - coord.y) / (this.modelDimensions.height / 2.0);
+        var phi = coord[X_INDEX] * scale - time * timeScale;
+        var distance = (this.waveOrigin - coord[Y_INDEX]) / (this.modelDimensions.height / 2.0);
 
-        return {
-            x: amplitude * Math.cos(distance) * Math.sin(phi),
-            y: amplitude * distance * Math.cos(phi),
-        };
+        displacement[X_INDEX] = amplitude * Math.cos(distance) * Math.sin(phi);
+        displacement[Y_INDEX] = amplitude * distance * Math.cos(phi);
+
+        return displacement;
     }
 
     /*

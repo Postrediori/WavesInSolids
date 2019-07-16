@@ -36,10 +36,11 @@ window.onload = function() {
             distance: 0
         };
         
+        var point = [0.0, 0.0];
         for (var j = 0; j < params.horizontalLines; j++) {
             for (var i = 0; i < params.pointsCount; i++) {
-                var point = model.horizontalCoords[j][i];
-                var distance = DistanceBetweenPoints(coord, point);
+                model.getHorizontalCoord(point, j, i);
+                var distance = distanceCoords(coord, point);
                     
                 if (!flag) {
                     // First point
@@ -65,8 +66,8 @@ window.onload = function() {
         
         for (var j = 0; j < params.verticalLines; j++) {
             for (var i = 0; i < params.pointsCount; i++) {
-                var point = model.verticalCoords[j][i];
-                var distance = DistanceBetweenPoints(coord, point);
+                model.getVerticalCoord(point, j, i);
+                var distance = distanceCoords(coord, point);
                 
                 if (distance < nearestPoint.distance) {
                     nearestPoint.dataSet = 'vertical';
@@ -147,53 +148,61 @@ window.onload = function() {
     }
 
     function updateSvgPoints(params, model) {
+        var coord1 = [0.0, 0.0],
+            coord2 = [0.0, 0.0];
+
         for (var j = 0; j < params.horizontalLines; j++) {
             for (var i = 0; i < params.pointsCount - 1; i++) {
-                var point1 = model.horizontalCoords[j][i];
-                var point2 = model.horizontalCoords[j][i + 1];
+                model.getHorizontalCoord(coord1, j, i);
+                model.getHorizontalCoord(coord2, j, i + 1);
 
                 var el = document.getElementById('horizontal-line-'
                     + j.toString() + '-' + i.toString());
-                el.setAttribute('x1', point1.x.toString());
-                el.setAttribute('y1', point1.y.toString());
-                el.setAttribute('x2', point2.x.toString());
-                el.setAttribute('y2', point2.y.toString());
+                el.setAttribute('x1', coord1[X_INDEX].toString());
+                el.setAttribute('y1', coord1[Y_INDEX].toString());
+                el.setAttribute('x2', coord2[X_INDEX].toString());
+                el.setAttribute('y2', coord2[Y_INDEX].toString());
             }
         }
         
         for (var j = 0; j < params.verticalLines; j++) {
             for (var i = 0; i < params.pointsCount - 1; i++) {
-                var point1 = model.verticalCoords[j][i];
-                var point2 = model.verticalCoords[j][i + 1];
+                model.getVerticalCoord(coord1, j, i);
+                model.getVerticalCoord(coord2, j, i + 1);
 
                 var el = document.getElementById('vertical-line-'
                     + j.toString() + '-' + i.toString());
-                el.setAttribute('x1', point1.x.toString());
-                el.setAttribute('y1', point1.y.toString());
-                el.setAttribute('x2', point2.x.toString());
-                el.setAttribute('y2', point2.y.toString());
+                el.setAttribute('x1', coord1[X_INDEX].toString());
+                el.setAttribute('y1', coord1[Y_INDEX].toString());
+                el.setAttribute('x2', coord2[X_INDEX].toString());
+                el.setAttribute('y2', coord2[Y_INDEX].toString());
             }
         }
 
         // Update marker
-        var markerPoint = markerPos.dataSet === 'horizontal' ?
-            model.horizontalCoords[markerPos.j][markerPos.i] :
-            model.verticalCoords[markerPos.j][markerPos.i];
+        var markerPoint = [0.0, 0.0];
+        if (markerPos.dataSet === 'horizontal') {
+            model.getHorizontalCoord(markerPoint, markerPos.j, markerPos.i);
+        }
+        else {
+            model.getVerticalCoord(markerPoint, markerPos.j, markerPos.i);
+        }
         var el = document.getElementById('marker-0');
-        el.setAttribute('cx', markerPoint.x.toString());
-        el.setAttribute('cy', markerPoint.y.toString());
+        el.setAttribute('cx', markerPoint[X_INDEX].toString());
+        el.setAttribute('cy', markerPoint[Y_INDEX].toString());
 
         // Update marker history
         for (var i = 0; i < markerHistory.historyLen - 1; i++) {
             var el = document.getElementById('marker-history-line-' + i.toString());
 
-            if (markerHistory.hasHistory(i)) {
-                el.setAttribute('visibility', 'visible');
-            } else {
+            if (!markerHistory.hasHistory(i)) {
                 el.setAttribute('visibility', 'hidden');
+                continue;
             }
+
             var line = markerHistory.getHistory(i);
 
+            el.setAttribute('visibility', 'visible');
             el.setAttribute('x1', line.x1.toString());
             el.setAttribute('y1', line.y1.toString());
             el.setAttribute('x2', line.x2.toString());
@@ -217,9 +226,13 @@ window.onload = function() {
         model.update(deltaTime);
 
         // Update markey point and history
-        var markerPoint = markerPos.dataSet === 'horizontal' ?
-            model.horizontalCoords[markerPos.j][markerPos.i] :
-            model.verticalCoords[markerPos.j][markerPos.i];
+        var markerPoint = [0.0, 0.0];
+        if (markerPos.dataSet === 'horizontal') {
+            model.getHorizontalCoord(markerPoint, markerPos.j, markerPos.i);
+        }
+        else {
+            model.getVerticalCoord(markerPoint, markerPos.j, markerPos.i);
+        }
         markerHistory.push(markerPoint);
 
         // Update SVG

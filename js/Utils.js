@@ -1,17 +1,50 @@
 'use strict';
 
-function CartesianToRadial(coord, origin) {
-    var dX = coord.x - origin.x;
-    var dY = coord.y - origin.y;
-    
-    var theta = Math.atan2(dY, dX);
-    var r = Math.sqrt(dX * dX + dY * dY);
-    
-    return {theta: theta, r: r};
+var COORD_SIZE = 2,
+    X_INDEX = 0,
+    Y_INDEX = 1,
+    R_INDEX = 0,
+    THETA_INDEX = 1;
+
+function addCoords(coordOut, coordA, coordB) {
+    var dx = coordA[X_INDEX] + coordB[X_INDEX],
+        dy = coordA[Y_INDEX] + coordB[Y_INDEX];
+
+    coordOut[X_INDEX] = dx;
+    coordOut[Y_INDEX] = dy;
+
+    return coordOut;
 }
 
-function DistanceBetweenPoints(p1, p2) {
-    var dX = p1.x - p2.x;
-    var dY = p1.y - p2.y;
-    return Math.sqrt(dX * dX + dY * dY);
+function subCoords(coordOut, coordA, coordB) {
+    var dx = coordA[X_INDEX] - coordB[X_INDEX],
+        dy = coordA[Y_INDEX] - coordB[Y_INDEX];
+
+    coordOut[X_INDEX] = dx;
+    coordOut[Y_INDEX] = dy;
+
+    return coordOut;
+}
+
+function lengthVector(vector) {
+    var dx = vector[X_INDEX],
+        dy = vector[Y_INDEX];
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function distanceCoords(coordOut, coordA, coordB) {
+    subCoords(coordOut, coordA, coordB);
+    return lengthVector(coordOut);
+}
+
+function convertCartesianToRadial(radialCoord, cartesianCoord, origin) {
+    subCoords(radialCoord, cartesianCoord, origin);
+    
+    var theta = Math.atan2(radialCoord[Y_INDEX], radialCoord[X_INDEX]);
+    var r = lengthVector(radialCoord);
+    
+    radialCoord[R_INDEX] = r;
+    radialCoord[THETA_INDEX] = theta;
+
+    return radialCoord;
 }
