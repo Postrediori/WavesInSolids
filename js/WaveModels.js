@@ -285,36 +285,57 @@ var RayleighWaveModel = function(params, dimensions) {
     this.modelDepth = this.modelDimensions.height;
     this.modelTop = this.modelOrigin.y;
      
-    this.getDisplacement = function(displacement, coord, time) {
-        var scale = params.scale;
-        var timeScale = params.timeScale;
+    // Mechanical parameters
+    var E = 1.0; // Imaginary material
+    var rho = 2.0; // Imaginary material
+    var nu = 0.3; // Let's stick to classics
+    
+    // Lame' parameters
+    var lambda = nu * E / ((1 + nu) * (1 - 2 * nu));
+    var mu = E / (2 * (1 + nu));
+    
+    // Approx. solution of Rayleigh wave
+    var thetaR = (0.87 + 1.12 * nu) / (1 + nu);
         
-        // Horizontal and vertical amplitudes
-        // are calculated as catheti of a right triangle
-        // with amplitude as a hypothenuse.
-        // TODO: Adjust two amplitudes independently.
-        var amplitude = [
-            params.amplitude / Math.sqrt(2.0),
-            params.amplitude / Math.sqrt(2.0)
+    this.getDisplacement = function(displacement, coord0, time) {
+        // Wave parameters
+        var scale = 5.0 * params.scale; // Just a nice adjustment
+        var omega = params.timeScale;
+        var A = params.amplitude * scale;
+        
+        var coord = [
+            coord0[X_INDEX] * scale / 20.,
+            coord0[Y_INDEX] * scale
         ];
         
         // Depth of a point
-        var currentDepth = coord[Y_INDEX] - this.modelTop;
-        
+        var currentDepth = coord[Y_INDEX] - this.modelTop * scale;
         var delta = currentDepth / this.modelDepth;
-        var currentAmplitude = [
-            // Horizontal amplitude is a cosine function.
-            // X Amplitude = max at the top and 0 at the bottom
-            amplitude[X_INDEX] * Math.exp(-delta),
-
-            // Vertical amplitude is a linear function.
-            amplitude[Y_INDEX] * Math.exp(-delta)
+        
+        // Rayleigh wave numbers for longitudinal and transversal waves
+        var cL = omega * Math.sqrt(rho / (lambda  + 2 * mu));
+        var cT = omega * Math.sqrt(rho / mu);
+        
+        // Rayleigh wave velocity
+        var c = cT / Math.sqrt(thetaR);
+        
+        var qR = Math.sqrt(c * c - cL * cL);
+        var sR = Math.sqrt(c * c - cT * cT);
+        
+        var amplitude = [
+            A * c,
+            A * qR
         ];
         
-        var phi = coord[X_INDEX] * scale - time * timeScale;
+        var dissipation = [
+            Math.exp(-qR * delta) - 2 * qR * sR / (cT * cT) * Math.exp(-sR * delta),
+            Math.exp(-qR * delta) - 2 * c * c / (2 * c * c - cT * cT) * Math.exp(-sR * delta)
+        ];
         
-        displacement[X_INDEX] = currentAmplitude[X_INDEX] * Math.cos(phi);
-        displacement[Y_INDEX] = currentAmplitude[Y_INDEX] * Math.sin(phi);
+        var phi = c * coord[X_INDEX] - omega * time;
+        
+        displacement[X_INDEX] = amplitude[X_INDEX] * dissipation[X_INDEX] * Math.cos(phi + Math.PI / 2.0);
+        displacement[Y_INDEX] = amplitude[Y_INDEX] * dissipation[X_INDEX] * Math.cos(phi);
 
         return displacement;
     }
